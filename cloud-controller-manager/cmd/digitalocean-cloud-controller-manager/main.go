@@ -47,7 +47,7 @@ func main() {
 		klog.Fatalf("failed to create config options: %s", err)
 	}
 
-	// s.AddFlags(pflag.CommandLine)
+	s.KubeCloudShared.AddFlags(pflag.CommandLine)
 
 	// TODO: once we switch everything over to Cobra commands, we can go back to calling
 	// utilflag.InitFlags() (by removing its pflag.Parse() call). For now, we have to set the
@@ -56,6 +56,7 @@ func main() {
 	pflag.CommandLine.AddGoFlagSet(goflag.CommandLine)
 	logs.InitLogs()
 	defer logs.FlushLogs()
+	pflag.Parse()
 
 	verflag.PrintAndExitIfRequested()
 
