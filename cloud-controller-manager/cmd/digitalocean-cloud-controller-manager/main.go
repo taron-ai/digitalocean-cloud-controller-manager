@@ -26,6 +26,7 @@ import (
 	"k8s.io/apiserver/pkg/server/healthz"
 	"k8s.io/component-base/cli/flag"
 	"k8s.io/component-base/logs"
+	"k8s.io/klog"
 	"k8s.io/kubernetes/cmd/cloud-controller-manager/app"
 	"k8s.io/kubernetes/cmd/cloud-controller-manager/app/options"
 	_ "k8s.io/kubernetes/pkg/client/metrics/prometheus" // for client metric registration
@@ -33,7 +34,6 @@ import (
 	"k8s.io/kubernetes/pkg/version/verflag"
 
 	_ "github.com/digitalocean/digitalocean-cloud-controller-manager/cloud-controller-manager/do"
-	"github.com/golang/glog"
 	"github.com/spf13/pflag"
 )
 
@@ -44,7 +44,7 @@ func init() {
 func main() {
 	s, err := options.NewCloudControllerManagerOptions()
 	if err != nil {
-		glog.Fatalf("failed to create config options: %s", err)
+		klog.Fatalf("failed to create config options: %s", err)
 	}
 
 	// s.AddFlags(pflag.CommandLine)
@@ -64,7 +64,7 @@ func main() {
 
 	config, err := s.Config(nil, nil)
 	if err != nil {
-		glog.Fatalf("failed to create component config: %s", err)
+		klog.Fatalf("failed to create component config: %s", err)
 	}
 
 	stop := make(chan struct{})

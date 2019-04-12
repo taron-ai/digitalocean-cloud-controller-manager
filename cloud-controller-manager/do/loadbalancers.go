@@ -26,9 +26,9 @@ import (
 
 	v1 "k8s.io/api/core/v1"
 	cloudprovider "k8s.io/cloud-provider"
+	"k8s.io/klog"
 
 	"github.com/digitalocean/godo"
-	"github.com/golang/glog"
 )
 
 const (
@@ -305,7 +305,7 @@ func (l *loadBalancers) nodesToDropletIDs(nodes []*v1.Node) ([]int, error) {
 			}
 			addresses, err := nodeAddresses(droplet)
 			if err != nil {
-				glog.Errorf("error getting node addresses for %s: %v", droplet.Name, err)
+				klog.Errorf("error getting node addresses for %s: %v", droplet.Name, err)
 				continue
 			}
 			for _, address := range addresses {
