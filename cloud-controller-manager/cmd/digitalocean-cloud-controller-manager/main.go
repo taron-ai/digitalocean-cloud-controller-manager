@@ -17,12 +17,15 @@ limitations under the License.
 package main
 
 import (
+	goflag "flag"
 	"fmt"
 	"os"
+	"os/signal"
+	"syscall"
 
 	"k8s.io/apiserver/pkg/server/healthz"
-	"k8s.io/apiserver/pkg/util/flag"
-	"k8s.io/apiserver/pkg/util/logs"
+	"k8s.io/component-base/cli/flag"
+	"k8s.io/component-base/logs"
 	"k8s.io/kubernetes/cmd/cloud-controller-manager/app"
 	"k8s.io/kubernetes/cmd/cloud-controller-manager/app/options"
 	_ "k8s.io/kubernetes/pkg/client/metrics/prometheus" // for client metric registration
@@ -44,9 +47,13 @@ func main() {
 		glog.Fatalf("failed to create config options: %s", err)
 	}
 
-	s.AddFlags(pflag.CommandLine)
+	// s.AddFlags(pflag.CommandLine)
 
-	flag.InitFlags()
+	// TODO: once we switch everything over to Cobra commands, we can go back to calling
+	// utilflag.InitFlags() (by removing its pflag.Parse() call). For now, we have to set the
+	// normalize func and add the go flag set by hand.
+	pflag.CommandLine.SetNormalizeFunc(flag.WordSepNormalizeFunc)
+	pflag.CommandLine.AddGoFlagSet(goflag.CommandLine)
 	logs.InitLogs()
 	defer logs.FlushLogs()
 
