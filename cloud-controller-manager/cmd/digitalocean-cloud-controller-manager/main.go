@@ -55,12 +55,20 @@ func main() {
 	// digitalocean overrides
 	s.KubeCloudShared.AllowUntaggedCloud = true
 
-	config, err := s.Config()
+	config, err := s.Config(nil, nil)
 	if err != nil {
 		glog.Fatalf("failed to create component config: %s", err)
 	}
 
-	if err := app.Run(config.Complete()); err != nil {
+	stop := make(chan struct{})
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
+	go func() {
+		<-c
+		close(stop)
+	}()
+
+	if err := app.Run(config.Complete(), stop); err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
 		os.Exit(1)
 	}
