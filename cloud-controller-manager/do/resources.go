@@ -31,7 +31,6 @@ import (
 	v1informers "k8s.io/client-go/informers/core/v1"
 	"k8s.io/client-go/kubernetes"
 	v1lister "k8s.io/client-go/listers/core/v1"
-	"k8s.io/kubernetes/pkg/cloudprovider"
 )
 
 const (
@@ -293,7 +292,7 @@ func (r *ResourcesController) syncTags() error {
 			continue
 		}
 
-		name := cloudprovider.GetLoadBalancerName(svc)
+		name := getDefaultLoadBalancerName(svc)
 		if id, ok := loadBalancers[name]; ok {
 			res = append(res, godo.Resource{
 				ID:   id,
